@@ -9,7 +9,10 @@ import co.edu.poli.contexto5.modelo.Mision;
 import co.edu.poli.contexto5.modelo.Satelite;
 import co.edu.poli.contexto5.modelo.SistemaControl;  
 import co.edu.poli.contexto5.modelo.Personal;
-import co.edu.poli.contexto5.servicios.ServicioPersonal; 
+import co.edu.poli.contexto5.servicios.ServicioPersonal;
+import co.edu.poli.contexto5.servicios.OperacionCRUD;
+import co.edu.poli.contexto5.servicios.ImplementacionOperacionCRUD;
+import java.util.Scanner;
 
 public class Principal {
 
@@ -41,7 +44,12 @@ public class Principal {
                 "MISION-ALPHA", "Senior", 1990,
                 "Revision tecnica de modulos", "Indefinido",
                 "Salud + Pension", "NIVEL-3", 'M',
-                "SAT-001", "Ingenieria Aeroespacial", 4500000.0);
+                "SAT-001", "Ingenieria Aeroespacial", 4500000.0) {
+            @Override
+            public String realizarLabor() {
+                return "Inspeccionando y calibrando modulos de orientacion del satelite";
+            }
+        };
 
 
         arregloEmpleados[1] = new Personal(
@@ -49,7 +57,12 @@ public class Principal {
                 "MISION-BETA", "Mid", 1995,
                 "Calculo de trayectorias", "Fijo",
                 "Salud + ARL", "NIVEL-2", 'F',
-                "SAT-002", "Astrofisica", 3800000.0);
+                "SAT-002", "Astrofisica", 3800000.0) {
+            @Override
+            public String realizarLabor() {
+                return "Calculando trayectorias y ventanas de lanzamiento orbital";
+            }
+        };
 
         // Posicion 2: objeto directo de la supersuperclase "Empleado"
         arregloEmpleados[2] = new Empleado();
@@ -205,5 +218,271 @@ public class Principal {
         System.out.println(registro1);
         System.out.println(registro2);
         System.out.println(registro3);
+
+        // ══════════════════════════════════════════════════════════════
+        // PUNTO 1, 2 y 3 - OPERACIONES CRUD
+        //
+        // Se instancia ImplementacionOperacionCRUD a traves de la interfaz
+        // OperacionCRUD (buena practica: programar hacia la interfaz).
+        //
+        // Como Personal es ahora ABSTRACTA, se crean instancias usando
+        // clases anonimas que implementan el metodo abstracto realizarLabor().
+        // Esto demuestra polimorfismo: el arreglo es de tipo Personal pero
+        // almacena distintas "versiones" con comportamiento propio.
+        // ══════════════════════════════════════════════════════════════
+        System.out.println("\n========== PUNTOS 1-2-3: OPERACIONES CRUD ===============");
+
+        OperacionCRUD servicioCRUD = new ImplementacionOperacionCRUD();
+
+        // --- Crear 3 objetos (el 3ro fuerza el redimensionamiento del arreglo) ---
+        Personal pCRUD1 = new Personal(
+                "1010101010", "Ana Restrepo", "Tecnico Satelital",
+                "MISION-ALPHA", "Senior", 1990,
+                "Reparacion de modulos de orientacion", "Indefinido",
+                "Salud + Pension", "NIVEL-3", 'F',
+                "CRUD-001", "Ingenieria Aeroespacial", 4500000.0) {
+            @Override
+            public String realizarLabor() {
+                return "Realizando calibracion de sensores del satelite SATCOM-1";
+            }
+        };
+
+        Personal pCRUD2 = new Personal(
+                "2020202020", "Luis Mendoza", "Ingeniero de Orbitas",
+                "MISION-BETA", "Mid", 1993,
+                "Calculo de trayectorias y ventanas de lanzamiento", "Fijo",
+                "Salud + ARL", "NIVEL-2", 'M',
+                "CRUD-002", "Astrofisica", 3800000.0) {
+            @Override
+            public String realizarLabor() {
+                return "Monitoreando la orbita geoestacionaria del satelite SATCOM-2";
+            }
+        };
+
+        Personal pCRUD3 = new Personal(
+                "3030303030", "Sofia Vargas", "Supervisora de Mision",
+                "MISION-GAMMA", "Junior", 1998,
+                "Coordinacion de equipos de mantenimiento", "Termino fijo",
+                "Salud", "NIVEL-1", 'F',
+                "CRUD-003", "Administracion Aeroespacial", 3200000.0) {
+            @Override
+            public String realizarLabor() {
+                return "Gestionando recursos humanos para mantenimiento preventivo";
+            }
+        };
+
+        // ── C: CREAR ──────────────────────────────────────────────────
+        System.out.println("\n--- C (CREAR) ---");
+        System.out.println(servicioCRUD.crear(pCRUD1)); // posicion [0]
+        System.out.println(servicioCRUD.crear(pCRUD2)); // posicion [1]
+        System.out.println(servicioCRUD.crear(pCRUD3)); // arreglo lleno -> se duplica
+        System.out.println("\n  >> Validacion - objeto nulo:");
+        System.out.println(servicioCRUD.crear(null));
+        System.out.println("  >> Validacion - cedula duplicada:");
+        System.out.println(servicioCRUD.crear(pCRUD1));
+
+        // ── R: LEER ───────────────────────────────────────────────────
+        System.out.println("\n--- R (LEER) ---");
+        Personal personalConsultado = servicioCRUD.leer("2020202020");
+        if (personalConsultado != null) {
+        System.out.println("Encontrado -> " + personalConsultado);
+            System.out.println("Labor      -> " + personalConsultado.realizarLabor());
+        }
+        System.out.println("  >> Validacion - cedula inexistente:");
+        servicioCRUD.leer("9999999999");
+
+        // ── U: ACTUALIZAR ─────────────────────────────────────────────
+        System.out.println("\n--- U (ACTUALIZAR) ---");
+        Personal pActualizado = new Personal(
+                "2020202020", "Luis Mendoza", "Ingeniero Senior de Orbitas",
+                "MISION-BETA", "Senior", 1993,
+                "Calculo avanzado de trayectorias", "Indefinido",
+                "Salud + ARL + Pension", "NIVEL-3", 'M',
+                "CRUD-002", "Astrofisica Avanzada", 5500000.0) {
+            @Override
+            public String realizarLabor() {
+                return "Liderando el equipo de calculo orbital para SATCOM-2 y SATCOM-3";
+            }
+        };
+        System.out.println(servicioCRUD.actualizar("2020202020", pActualizado));
+        System.out.println("  >> Validacion - ID inexistente:");
+        System.out.println(servicioCRUD.actualizar("8888888888", pActualizado));
+        System.out.println("  >> Validacion - objeto nulo:");
+        System.out.println(servicioCRUD.actualizar("2020202020", null));
+
+        // ── D: ELIMINAR ───────────────────────────────────────────────
+        System.out.println("\n--- D (ELIMINAR) ---");
+        System.out.println(servicioCRUD.eliminar("1010101010"));
+        System.out.println("  >> Validacion - cedula inexistente:");
+        System.out.println(servicioCRUD.eliminar("1010101010"));
+
+        // ── Verificacion final: crear tras eliminar (debe ocupar posicion liberada) ──
+        System.out.println("\n--- CREAR TRAS ELIMINAR (debe ocupar el primer null) ---");
+        Personal pNuevo = new Personal(
+                "4040404040", "Jorge Castillo", "Operador de Control",
+                "MISION-DELTA", "Junior", 2000,
+                "Monitoreo de sistemas en tiempo real", "Termino fijo",
+                "Salud", "NIVEL-1", 'M',
+                "CRUD-004", "Electronica", 2800000.0) {
+            @Override
+            public String realizarLabor() {
+                return "Operando panel de control de la estacion terrestre";
+            }
+        };
+        System.out.println(servicioCRUD.crear(pNuevo));
+
+        System.out.println("\n=========================================================");
+        System.out.println("  FIN DE PRUEBAS AUTOMATICAS                             ");
+        System.out.println("=========================================================");
+
+        // ══════════════════════════════════════════════════════════════
+        // MENU INTERACTIVO CRUD
+        // Permite al usuario operar el CRUD ingresando datos por consola.
+        // Se usa una nueva instancia limpia del servicio para mayor claridad.
+        // ══════════════════════════════════════════════════════════════
+        System.out.println("\n=========================================================");
+        System.out.println("       MENU INTERACTIVO - GESTION DE PERSONAL            ");
+        System.out.println("=========================================================");
+
+        OperacionCRUD menu = new ImplementacionOperacionCRUD();
+        Scanner scanner = new Scanner(System.in);
+        int opcion = 0;
+
+        do {
+            System.out.println("\n+---------------------------------------------------------+");
+            System.out.println("|         SISTEMA DE GESTION DE PERSONAL                 |");
+            System.out.println("+---------------------------------------------------------+");
+            System.out.println("|  1. CREAR   - Registrar nuevo personal                 |");
+            System.out.println("|  2. LEER    - Consultar personal por cedula             |");
+            System.out.println("|  3. ACTUALIZAR - Modificar personal por cedula          |");
+            System.out.println("|  4. ELIMINAR   - Eliminar personal por cedula           |");
+            System.out.println("|  5. SALIR                                               |");
+            System.out.println("+---------------------------------------------------------+");
+            System.out.print("  Seleccione una opcion: ");
+
+            // Validacion de entrada numerica
+            if (scanner.hasNextInt()) {
+                opcion = scanner.nextInt();
+                scanner.nextLine(); // limpiar buffer
+            } else {
+                System.out.println("  [!] Ingrese un numero valido.");
+                scanner.nextLine();
+                continue;
+            }
+
+            switch (opcion) {
+
+                case 1: // ── CREAR ────────────────────────────────────────────
+                    System.out.println("\n--- CREAR PERSONAL ---");
+                    System.out.print("  Cedula       : "); final String cCedula = scanner.nextLine().trim();
+                    System.out.print("  Nombre       : "); final String cNombre = scanner.nextLine().trim();
+                    System.out.print("  Cargo        : "); final String cCargo = scanner.nextLine().trim();
+                    System.out.print("  Mision       : "); final String cMision = scanner.nextLine().trim();
+                    System.out.print("  Nivel prof.  : "); final String cNivel = scanner.nextLine().trim();
+                    System.out.print("  Anio nacim.  : ");
+                    int cAnio = 0;
+                    try { cAnio = Integer.parseInt(scanner.nextLine().trim()); }
+                    catch (NumberFormatException e) { System.out.println("  [!] Anio invalido, se usara 2000."); cAnio = 2000; }
+                    System.out.print("  Responsab.   : "); final String cResp = scanner.nextLine().trim();
+                    System.out.print("  Tipo contrato: "); final String cContrato = scanner.nextLine().trim();
+                    System.out.print("  Beneficios   : "); final String cBeneficios = scanner.nextLine().trim();
+                    System.out.print("  Autorizacion : "); final String cAutor = scanner.nextLine().trim();
+                    System.out.print("  Sexo (M/F)   : ");
+                    String sexoStr = scanner.nextLine().trim();
+                    final char cSexo = (sexoStr.length() > 0) ? Character.toUpperCase(sexoStr.charAt(0)) : 'M';
+                    System.out.print("  Cod. barras  : "); final String cCodigo = scanner.nextLine().trim();
+                    System.out.print("  Campo prof.  : "); final String cCampo = scanner.nextLine().trim();
+                    System.out.print("  Sueldo       : ");
+                    double cSueldo = 0;
+                    try { cSueldo = Double.parseDouble(scanner.nextLine().trim()); }
+                    catch (NumberFormatException e) { System.out.println("  [!] Sueldo invalido, se usara 0."); }
+                    System.out.print("  Labor        : "); final String cLabor = scanner.nextLine().trim();
+                    final int finalAnio = cAnio;
+                    final double finalSueldo = cSueldo;
+
+                    Personal nuevo = new Personal(
+                            cCedula, cNombre, cCargo, cMision, cNivel,
+                            finalAnio, cResp, cContrato, cBeneficios, cAutor,
+                            cSexo, cCodigo, cCampo, finalSueldo) {
+                        @Override
+                        public String realizarLabor() { return cLabor; }
+                    };
+                    System.out.println("\n  " + menu.crear(nuevo));
+                    break;
+
+                case 2: // ── LEER ─────────────────────────────────────────────
+                    System.out.println("\n--- CONSULTAR PERSONAL ---");
+                    System.out.print("  Ingrese la cedula: ");
+                    String cedBuscar = scanner.nextLine().trim();
+                    personalConsultado = menu.leer(cedBuscar);
+                    if (personalConsultado != null) {
+                        System.out.println("\n  +-----------------------------------------------+");
+                        System.out.println("  | RESULTADO DE CONSULTA                         |");
+                        System.out.println("  +-----------------------------------------------+");
+                        System.out.println("  | Cedula   : " + personalConsultado.getCedula());
+                        System.out.println("  | Nombre   : " + personalConsultado.getNombre());
+                        System.out.println("  | Cargo    : " + personalConsultado.getCargo());
+                        System.out.println("  | Mision   : " + personalConsultado.getMisionasignada());
+                        System.out.println("  | Nivel    : " + personalConsultado.getNivelprofesional());
+                        System.out.println("  | Sueldo   : $" + personalConsultado.getSueldo());
+                        System.out.println("  | Labor    : " + personalConsultado.realizarLabor());
+                        System.out.println("  +-----------------------------------------------+");
+                    }
+                    break;
+
+                case 3: // ── ACTUALIZAR ───────────────────────────────────────
+                    System.out.println("\n--- ACTUALIZAR PERSONAL ---");
+                    System.out.print("  Cedula a modificar: ");
+                    String cedActualizar = scanner.nextLine().trim();
+
+                    // Verificar que exista antes de pedir datos
+                    if (menu.leer(cedActualizar) == null) {
+                        System.out.println("  [!] No se encontro personal con esa cedula.");
+                        break;
+                    }
+                    System.out.println("  Personal encontrado. Ingrese los nuevos datos:");
+                    System.out.print("  Nuevo nombre       : "); final String aNombre = scanner.nextLine().trim();
+                    System.out.print("  Nuevo cargo        : "); final String aCargo = scanner.nextLine().trim();
+                    System.out.print("  Nueva mision       : "); final String aMision = scanner.nextLine().trim();
+                    System.out.print("  Nuevo nivel prof.  : "); final String aNivel = scanner.nextLine().trim();
+                    System.out.print("  Nuevo tipo contrato: "); final String aContrato = scanner.nextLine().trim();
+                    System.out.print("  Nuevo sueldo       : ");
+                    double aSueldo = 0;
+                    try { aSueldo = Double.parseDouble(scanner.nextLine().trim()); }
+                    catch (NumberFormatException e) { System.out.println("  [!] Sueldo invalido, se usara 0."); }
+                    System.out.print("  Nueva labor        : "); final String aLabor = scanner.nextLine().trim();
+                    final double finalASueldo = aSueldo;
+                    final String finalCed = cedActualizar;
+
+                    Personal actualizado = new Personal(
+                            finalCed, aNombre, aCargo, aMision, aNivel,
+                            0, "", aContrato, "", "", 'M', "", "", finalASueldo) {
+                        @Override
+                        public String realizarLabor() { return aLabor; }
+                    };
+                    System.out.println("\n  " + menu.actualizar(cedActualizar, actualizado));
+                    break;
+
+                case 4: // ── ELIMINAR ─────────────────────────────────────────
+                    System.out.println("\n--- ELIMINAR PERSONAL ---");
+                    System.out.print("  Ingrese la cedula a eliminar: ");
+                    String cedEliminar = scanner.nextLine().trim();
+                    System.out.println("\n  " + menu.eliminar(cedEliminar));
+                    break;
+
+                case 5:
+                    System.out.println("\n  Saliendo del sistema. Hasta luego!");
+                    break;
+
+                default:
+                    System.out.println("  [!] Opcion no valida. Elija entre 1 y 5.");
+            }
+
+        } while (opcion != 5);
+
+        scanner.close();
+        System.out.println("\n=========================================================");
+        System.out.println("  SISTEMA CERRADO                                         ");
+        System.out.println("=========================================================");
     }
 }

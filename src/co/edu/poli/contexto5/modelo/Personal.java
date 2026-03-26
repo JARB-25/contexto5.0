@@ -1,6 +1,7 @@
 package co.edu.poli.contexto5.modelo;
 
-public class Personal extends Empleado {
+// PUNTO 1: Clase de mayor jerarquía convertida a abstracta
+public abstract class Personal extends Empleado {
 
     private String cedula;
     private String nombre;
@@ -37,6 +38,13 @@ public class Personal extends Empleado {
         this.campoprofesional = campoprofesional;
         this.sueldo = sueldo;
     }
+
+    /*
+     * PUNTO 1 - METODO ABSTRACTO
+     * Obliga a cada subclase de Personal a definir cual es su labor especifica
+     * dentro del sistema de mantenimiento de satelites.
+     */
+    public abstract String realizarLabor();
 
     /*
      * PUNTO 3 - SOBREESCRITURA (Override)

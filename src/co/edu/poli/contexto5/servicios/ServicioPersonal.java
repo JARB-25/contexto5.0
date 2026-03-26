@@ -31,6 +31,7 @@ public class ServicioPersonal {
      * de Empleado -> polimorfismo de retorno.
      */
     public Empleado crearEmpleadoEstandar() {
+        // Personal es abstracta: se usa clase anonima que implementa realizarLabor()
         Personal nuevoPersonal = new Personal(
                 "9999999999",
                 "Empleado Estandar",
@@ -46,7 +47,12 @@ public class ServicioPersonal {
                 "STD-000",
                 "Ingenieria",
                 2000000.0
-        );
+        ) {
+            @Override
+            public String realizarLabor() {
+                return "Ejecutando tareas estandar de mantenimiento de satelites";
+            }
+        };
         // Se retorna como Empleado (supersuperclase) -> polimorfismo
         return nuevoPersonal;
     }
