@@ -1,4 +1,5 @@
 target/
+bin/
 
 # Eclipse / IDE local files
 .classpath
