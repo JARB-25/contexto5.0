@@ -1,0 +1,377 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
+
+<ScrollPane fitToWidth="true"
+            style="-fx-background-color: #F0F4FF; -fx-background: #F0F4FF;"
+            xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="co.edu.poli.contexto5.controller.PrimaryController">
+
+  <VBox spacing="0" style="-fx-background-color: #F0F4FF;" minWidth="1020">
+
+    <!-- ══════════ HEADER ══════════ -->
+    <HBox alignment="CENTER_LEFT"
+          style="-fx-background-color: #4B2ECB; -fx-padding: 18 30 18 30;">
+      <VBox spacing="2">
+        <Label text="🛰️  SatControl"
+               style="-fx-text-fill: white; -fx-font-size: 26px; -fx-font-weight: bold; -fx-font-family: 'Segoe UI';"/>
+        <Label text="Sistema de Gestión de Mantenimiento de Satélites"
+               style="-fx-text-fill: #BDB5FF; -fx-font-size: 13px; -fx-font-family: 'Segoe UI';"/>
+      </VBox>
+      <Region HBox.hgrow="ALWAYS"/>
+      <Label text="NASA · 6 satélites activos"
+             style="-fx-background-color: #6C47FF; -fx-text-fill: white; -fx-padding: 6 14 6 14;
+                    -fx-background-radius: 20; -fx-font-family: 'Segoe UI'; -fx-font-size: 12px;"/>
+    </HBox>
+
+    <!-- ══════════ CONTENIDO PRINCIPAL ══════════ -->
+    <VBox spacing="20" style="-fx-padding: 24 28 24 28;">
+
+      <!-- ─── SECCIÓN MANTENIMIENTO ─── -->
+      <VBox spacing="10"
+            style="-fx-background-color: white; -fx-background-radius: 16; -fx-padding: 20;
+                   -fx-effect: dropshadow(gaussian,rgba(75,46,203,0.10),12,0,0,4);">
+
+        <!-- Cabecera -->
+        <HBox alignment="CENTER_LEFT" spacing="12">
+          <Label text="🔧" style="-fx-font-size: 22px;"/>
+          <VBox spacing="1">
+            <Label text="Registros de Mantenimiento"
+                   style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-font-family: 'Segoe UI'; -fx-text-fill: #1A1035;"/>
+            <Label text="Gestión completa de órdenes de mantenimiento"
+                   style="-fx-font-size: 11px; -fx-text-fill: #8B8BBA; -fx-font-family: 'Segoe UI';"/>
+          </VBox>
+          <Region HBox.hgrow="ALWAYS"/>
+          <Button text="➕ Crear"      onAction="#abrirCrearMant"
+                  style="-fx-background-color: #58CC02; -fx-text-fill: white; -fx-font-weight: bold;
+                         -fx-font-family: 'Segoe UI'; -fx-background-radius: 10; -fx-padding: 8 16; -fx-cursor: hand;"/>
+          <Button text="🔍 Consultar" onAction="#abrirConsultarMant"
+                  style="-fx-background-color: #1CB0F6; -fx-text-fill: white; -fx-font-weight: bold;
+                         -fx-font-family: 'Segoe UI'; -fx-background-radius: 10; -fx-padding: 8 16; -fx-cursor: hand;"/>
+          <Button text="✏️ Actualizar" onAction="#abrirActualizarMant"
+                  style="-fx-background-color: #FF9600; -fx-text-fill: white; -fx-font-weight: bold;
+                         -fx-font-family: 'Segoe UI'; -fx-background-radius: 10; -fx-padding: 8 16; -fx-cursor: hand;"/>
+          <Button text="🗑️ Eliminar"  onAction="#abrirEliminarMant"
+                  style="-fx-background-color: #FF4B4B; -fx-text-fill: white; -fx-font-weight: bold;
+                         -fx-font-family: 'Segoe UI'; -fx-background-radius: 10; -fx-padding: 8 16; -fx-cursor: hand;"/>
+        </HBox>
+
+        <!-- Tabla mantenimiento -->
+        <TableView fx:id="tablaMant" prefHeight="180"
+                   style="-fx-background-color: transparent; -fx-background-radius: 10;
+                          -fx-border-color: #E8E8F5; -fx-border-radius: 10;">
+          <columns>
+            <TableColumn fx:id="colMantNit"          text="NIT"           prefWidth="90"/>
+            <TableColumn fx:id="colMantFecha"         text="Fecha"         prefWidth="95"/>
+            <TableColumn fx:id="colMantGerente"       text="Gerente"       prefWidth="120"/>
+            <TableColumn fx:id="colMantSupervisor"    text="Supervisor"    prefWidth="120"/>
+            <TableColumn fx:id="colMantSatelite"      text="Satélite"      prefWidth="160"/>
+            <TableColumn fx:id="colMantHerramientas"  text="Herramientas"  prefWidth="150"/>
+            <TableColumn fx:id="colMantJustificacion" text="Justificación" prefWidth="160"/>
+            <TableColumn fx:id="colMantPropuesta"     text="Propuesta"     prefWidth="160"/>
+            <TableColumn fx:id="colMantCapital"       text="Capital ($)"   prefWidth="100"/>
+          </columns>
+          <placeholder>
+            <Label text="Sin registros de mantenimiento" style="-fx-text-fill: #AAAACC;"/>
+          </placeholder>
+        </TableView>
+
+        <!-- Panel desplegable CRUD Mantenimiento -->
+        <VBox fx:id="panelMant" spacing="10"
+              style="-fx-background-color: #F5F0FF; -fx-background-radius: 12; -fx-padding: 16;
+                     -fx-border-color: #C4B5FD; -fx-border-radius: 12; -fx-border-width: 1.5;">
+
+          <!-- Título y botón cerrar -->
+          <HBox alignment="CENTER_LEFT">
+            <Label fx:id="lblTituloMant" text="Mantenimiento"
+                   style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-font-family: 'Segoe UI'; -fx-text-fill: #4B2ECB;"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button text="✕" onAction="#cerrarPanelMant"
+                    style="-fx-background-color: transparent; -fx-text-fill: #8B8BBA;
+                           -fx-font-size: 14px; -fx-cursor: hand; -fx-border-color: transparent;"/>
+          </HBox>
+
+          <!-- NIT (siempre visible) -->
+          <HBox spacing="10" alignment="CENTER_LEFT">
+            <VBox spacing="3">
+              <Label text="NIT *" style="-fx-font-family: 'Segoe UI'; -fx-font-size: 11px; -fx-text-fill: #5A5A8A;"/>
+              <TextField fx:id="tfMantNit" promptText="Ej: NIT-004"
+                         style="-fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #C4B5FD;
+                                -fx-border-width: 1.5; -fx-padding: 6 10; -fx-font-family: 'Segoe UI'; -fx-pref-width: 140;"/>
+            </VBox>
+          </HBox>
+
+          <!-- Campos extra (ocultos en Consultar/Eliminar) -->
+          <HBox fx:id="rowsMant" spacing="10" alignment="CENTER_LEFT">
+            <VBox spacing="3">
+              <Label text="Fecha" style="-fx-font-family: 'Segoe UI'; -fx-font-size: 11px; -fx-text-fill: #5A5A8A;"/>
+              <TextField fx:id="tfMantFecha" promptText="AAAA-MM-DD"
+                         style="-fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #C4B5FD;
+                                -fx-border-width: 1.5; -fx-padding: 6 10; -fx-font-family: 'Segoe UI'; -fx-pref-width: 120;"/>
+            </VBox>
+            <VBox spacing="3">
+              <Label text="Gerente" style="-fx-font-family: 'Segoe UI'; -fx-font-size: 11px; -fx-text-fill: #5A5A8A;"/>
+              <TextField fx:id="tfMantGerente" promptText="Nombre gerente"
+                         style="-fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #C4B5FD;
+                                -fx-border-width: 1.5; -fx-padding: 6 10; -fx-font-family: 'Segoe UI'; -fx-pref-width: 150;"/>
+            </VBox>
+            <VBox spacing="3">
+              <Label text="Supervisor" style="-fx-font-family: 'Segoe UI'; -fx-font-size: 11px; -fx-text-fill: #5A5A8A;"/>
+              <TextField fx:id="tfMantSupervisor" promptText="Nombre supervisor"
+                         style="-fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #C4B5FD;
+                                -fx-border-width: 1.5; -fx-padding: 6 10; -fx-font-family: 'Segoe UI'; -fx-pref-width: 150;"/>
+            </VBox>
+            <VBox spacing="3">
+              <Label text="Herramientas" style="-fx-font-family: 'Segoe UI'; -fx-font-size: 11px; -fx-text-fill: #5A5A8A;"/>
+              <TextField fx:id="tfMantHerramientas" promptText="Herramientas usadas"
+                         style="-fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #C4B5FD;
+                                -fx-border-width: 1.5; -fx-padding: 6 10; -fx-font-family: 'Segoe UI'; -fx-pref-width: 160;"/>
+            </VBox>
+            <VBox spacing="3">
+              <Label text="Justificación" style="-fx-font-family: 'Segoe UI'; -fx-font-size: 11px; -fx-text-fill: #5A5A8A;"/>
+              <TextField fx:id="tfMantJustificacion" promptText="Justificación técnica"
+                         style="-fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #C4B5FD;
+                                -fx-border-width: 1.5; -fx-padding: 6 10; -fx-font-family: 'Segoe UI'; -fx-pref-width: 170;"/>
+            </VBox>
+            <VBox spacing="3">
+              <Label text="Propuesta" style="-fx-font-family: 'Segoe UI'; -fx-font-size: 11px; -fx-text-fill: #5A5A8A;"/>
+              <TextField fx:id="tfMantPropuesta" promptText="Propuesta de acción"
+                         style="-fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #C4B5FD;
+                                -fx-border-width: 1.5; -fx-padding: 6 10; -fx-font-family: 'Segoe UI'; -fx-pref-width: 160;"/>
+            </VBox>
+            <VBox spacing="3">
+              <Label text="Capital ($)" style="-fx-font-family: 'Segoe UI'; -fx-font-size: 11px; -fx-text-fill: #5A5A8A;"/>
+              <TextField fx:id="tfMantCapital" promptText="0.0"
+                         style="-fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #C4B5FD;
+                                -fx-border-width: 1.5; -fx-padding: 6 10; -fx-font-family: 'Segoe UI'; -fx-pref-width: 100;"/>
+            </VBox>
+          </HBox>
+
+          <!-- ComboBox satélite (separado del HBox anterior para visibilidad independiente) -->
+          <VBox fx:id="vboxComboSatelite" spacing="3">
+            <Label text="Satélite asignado" style="-fx-font-family: 'Segoe UI'; -fx-font-size: 11px; -fx-text-fill: #5A5A8A;"/>
+            <ComboBox fx:id="cbMantSatelite" promptText="Seleccionar satélite"
+                      style="-fx-background-radius: 8; -fx-border-radius: 8; -fx-pref-width: 280; -fx-font-family: 'Segoe UI';"/>
+          </VBox>
+
+          <!-- Botón acción + resultado -->
+          <HBox spacing="12" alignment="CENTER_LEFT">
+            <Button fx:id="btnAccionMant" text="Registrar" onAction="#ejecutarAccionMant"
+                    style="-fx-background-color: #4B2ECB; -fx-text-fill: white; -fx-font-weight: bold;
+                           -fx-font-family: 'Segoe UI'; -fx-background-radius: 10; -fx-padding: 8 24; -fx-cursor: hand;"/>
+            <Label fx:id="lblResultMant" text="" wrapText="true" maxWidth="700"
+                   style="-fx-font-family: 'Segoe UI'; -fx-font-size: 12px; -fx-text-fill: #3A3A6A;"/>
+          </HBox>
+        </VBox>
+      </VBox>
+
+      <!-- ─── SECCIÓN PERSONAL ─── -->
+      <VBox spacing="10"
+            style="-fx-background-color: white; -fx-background-radius: 16; -fx-padding: 20;
+                   -fx-effect: dropshadow(gaussian,rgba(28,176,246,0.10),12,0,0,4);">
+
+        <HBox alignment="CENTER_LEFT" spacing="12">
+          <Label text="👤" style="-fx-font-size: 22px;"/>
+          <VBox spacing="1">
+            <Label text="Personal Técnico"
+                   style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-font-family: 'Segoe UI'; -fx-text-fill: #1A1035;"/>
+            <Label text="Gestión del personal asignado al sistema"
+                   style="-fx-font-size: 11px; -fx-text-fill: #8B8BBA; -fx-font-family: 'Segoe UI';"/>
+          </VBox>
+          <Region HBox.hgrow="ALWAYS"/>
+          <Button text="➕ Crear"      onAction="#abrirCrearPer"
+                  style="-fx-background-color: #58CC02; -fx-text-fill: white; -fx-font-weight: bold;
+                         -fx-font-family: 'Segoe UI'; -fx-background-radius: 10; -fx-padding: 8 16; -fx-cursor: hand;"/>
+          <Button text="🔍 Consultar" onAction="#abrirConsultarPer"
+                  style="-fx-background-color: #1CB0F6; -fx-text-fill: white; -fx-font-weight: bold;
+                         -fx-font-family: 'Segoe UI'; -fx-background-radius: 10; -fx-padding: 8 16; -fx-cursor: hand;"/>
+          <Button text="✏️ Actualizar" onAction="#abrirActualizarPer"
+                  style="-fx-background-color: #FF9600; -fx-text-fill: white; -fx-font-weight: bold;
+                         -fx-font-family: 'Segoe UI'; -fx-background-radius: 10; -fx-padding: 8 16; -fx-cursor: hand;"/>
+          <Button text="🗑️ Eliminar"  onAction="#abrirEliminarPer"
+                  style="-fx-background-color: #FF4B4B; -fx-text-fill: white; -fx-font-weight: bold;
+                         -fx-font-family: 'Segoe UI'; -fx-background-radius: 10; -fx-padding: 8 16; -fx-cursor: hand;"/>
+        </HBox>
+
+        <TableView fx:id="tablaPersonal" prefHeight="160"
+                   style="-fx-background-color: transparent; -fx-background-radius: 10;
+                          -fx-border-color: #E8E8F5; -fx-border-radius: 10;">
+          <columns>
+            <TableColumn fx:id="colPerCedula"   text="Cédula"     prefWidth="110"/>
+            <TableColumn fx:id="colPerNombre"   text="Nombre"     prefWidth="160"/>
+            <TableColumn fx:id="colPerCargo"    text="Cargo"      prefWidth="140"/>
+            <TableColumn fx:id="colPerMision"   text="Misión"     prefWidth="130"/>
+            <TableColumn fx:id="colPerNivel"    text="Nivel"      prefWidth="100"/>
+            <TableColumn fx:id="colPerContrato" text="Contrato"   prefWidth="110"/>
+            <TableColumn fx:id="colPerSueldo"   text="Sueldo ($)" prefWidth="100"/>
+          </columns>
+          <placeholder>
+            <Label text="Sin personal registrado" style="-fx-text-fill: #AAAACC;"/>
+          </placeholder>
+        </TableView>
+
+        <!-- Panel desplegable CRUD Personal -->
+        <VBox fx:id="panelPer" spacing="10"
+              style="-fx-background-color: #F0FAFF; -fx-background-radius: 12; -fx-padding: 16;
+                     -fx-border-color: #7DD3FC; -fx-border-radius: 12; -fx-border-width: 1.5;">
+
+          <HBox alignment="CENTER_LEFT">
+            <Label fx:id="lblTituloPer" text="Personal"
+                   style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-font-family: 'Segoe UI'; -fx-text-fill: #0369A1;"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button text="✕" onAction="#cerrarPanelPer"
+                    style="-fx-background-color: transparent; -fx-text-fill: #8B8BBA;
+                           -fx-font-size: 14px; -fx-cursor: hand; -fx-border-color: transparent;"/>
+          </HBox>
+
+          <!-- Cédula siempre visible -->
+          <HBox spacing="10" alignment="CENTER_LEFT">
+            <VBox spacing="3">
+              <Label text="Cédula *" style="-fx-font-family: 'Segoe UI'; -fx-font-size: 11px; -fx-text-fill: #5A5A8A;"/>
+              <TextField fx:id="tfPerCedula" promptText="Número de cédula"
+                         style="-fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #7DD3FC;
+                                -fx-border-width: 1.5; -fx-padding: 6 10; -fx-font-family: 'Segoe UI'; -fx-pref-width: 150;"/>
+            </VBox>
+          </HBox>
+
+          <!-- Campos extra (ocultos en Consultar/Eliminar) -->
+          <HBox fx:id="rowsPer" spacing="10" alignment="CENTER_LEFT">
+            <VBox spacing="3">
+              <Label text="Nombre *" style="-fx-font-family: 'Segoe UI'; -fx-font-size: 11px; -fx-text-fill: #5A5A8A;"/>
+              <TextField fx:id="tfPerNombre" promptText="Nombre completo"
+                         style="-fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #7DD3FC;
+                                -fx-border-width: 1.5; -fx-padding: 6 10; -fx-font-family: 'Segoe UI'; -fx-pref-width: 160;"/>
+            </VBox>
+            <VBox spacing="3">
+              <Label text="Cargo *" style="-fx-font-family: 'Segoe UI'; -fx-font-size: 11px; -fx-text-fill: #5A5A8A;"/>
+              <TextField fx:id="tfPerCargo" promptText="Cargo o rol"
+                         style="-fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #7DD3FC;
+                                -fx-border-width: 1.5; -fx-padding: 6 10; -fx-font-family: 'Segoe UI'; -fx-pref-width: 130;"/>
+            </VBox>
+            <VBox spacing="3">
+              <Label text="Misión asignada" style="-fx-font-family: 'Segoe UI'; -fx-font-size: 11px; -fx-text-fill: #5A5A8A;"/>
+              <TextField fx:id="tfPerMision" promptText="Código misión"
+                         style="-fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #7DD3FC;
+                                -fx-border-width: 1.5; -fx-padding: 6 10; -fx-font-family: 'Segoe UI'; -fx-pref-width: 120;"/>
+            </VBox>
+            <VBox spacing="3">
+              <Label text="Nivel profesional" style="-fx-font-family: 'Segoe UI'; -fx-font-size: 11px; -fx-text-fill: #5A5A8A;"/>
+              <TextField fx:id="tfPerNivel" promptText="Junior / Senior"
+                         style="-fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #7DD3FC;
+                                -fx-border-width: 1.5; -fx-padding: 6 10; -fx-font-family: 'Segoe UI'; -fx-pref-width: 120;"/>
+            </VBox>
+            <VBox spacing="3">
+              <Label text="Tipo contrato" style="-fx-font-family: 'Segoe UI'; -fx-font-size: 11px; -fx-text-fill: #5A5A8A;"/>
+              <TextField fx:id="tfPerContrato" promptText="Fijo / Temporal"
+                         style="-fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #7DD3FC;
+                                -fx-border-width: 1.5; -fx-padding: 6 10; -fx-font-family: 'Segoe UI'; -fx-pref-width: 120;"/>
+            </VBox>
+            <VBox spacing="3">
+              <Label text="Sueldo ($)" style="-fx-font-family: 'Segoe UI'; -fx-font-size: 11px; -fx-text-fill: #5A5A8A;"/>
+              <TextField fx:id="tfPerSueldo" promptText="0.0"
+                         style="-fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #7DD3FC;
+                                -fx-border-width: 1.5; -fx-padding: 6 10; -fx-font-family: 'Segoe UI'; -fx-pref-width: 100;"/>
+            </VBox>
+            <VBox spacing="3">
+              <Label text="Año nacimiento" style="-fx-font-family: 'Segoe UI'; -fx-font-size: 11px; -fx-text-fill: #5A5A8A;"/>
+              <TextField fx:id="tfPerAnio" promptText="1990"
+                         style="-fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #7DD3FC;
+                                -fx-border-width: 1.5; -fx-padding: 6 10; -fx-font-family: 'Segoe UI'; -fx-pref-width: 90;"/>
+            </VBox>
+            <VBox spacing="3">
+              <Label text="Sexo (M/F)" style="-fx-font-family: 'Segoe UI'; -fx-font-size: 11px; -fx-text-fill: #5A5A8A;"/>
+              <TextField fx:id="tfPerSexo" promptText="M"
+                         style="-fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #7DD3FC;
+                                -fx-border-width: 1.5; -fx-padding: 6 10; -fx-font-family: 'Segoe UI'; -fx-pref-width: 60;"/>
+            </VBox>
+            <VBox spacing="3">
+              <Label text="Responsabilidades" style="-fx-font-family: 'Segoe UI'; -fx-font-size: 11px; -fx-text-fill: #5A5A8A;"/>
+              <TextField fx:id="tfPerResponsabilidades" promptText="Descripción"
+                         style="-fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #7DD3FC;
+                                -fx-border-width: 1.5; -fx-padding: 6 10; -fx-font-family: 'Segoe UI'; -fx-pref-width: 150;"/>
+            </VBox>
+            <VBox spacing="3">
+              <Label text="Beneficios" style="-fx-font-family: 'Segoe UI'; -fx-font-size: 11px; -fx-text-fill: #5A5A8A;"/>
+              <TextField fx:id="tfPerBeneficios" promptText="Beneficios"
+                         style="-fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #7DD3FC;
+                                -fx-border-width: 1.5; -fx-padding: 6 10; -fx-font-family: 'Segoe UI'; -fx-pref-width: 120;"/>
+            </VBox>
+            <VBox spacing="3">
+              <Label text="Autorizaciones" style="-fx-font-family: 'Segoe UI'; -fx-font-size: 11px; -fx-text-fill: #5A5A8A;"/>
+              <TextField fx:id="tfPerAutorizaciones" promptText="Nivel acceso"
+                         style="-fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #7DD3FC;
+                                -fx-border-width: 1.5; -fx-padding: 6 10; -fx-font-family: 'Segoe UI'; -fx-pref-width: 120;"/>
+            </VBox>
+            <VBox spacing="3">
+              <Label text="Código barras" style="-fx-font-family: 'Segoe UI'; -fx-font-size: 11px; -fx-text-fill: #5A5A8A;"/>
+              <TextField fx:id="tfPerCodigoBarras" promptText="STD-001"
+                         style="-fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #7DD3FC;
+                                -fx-border-width: 1.5; -fx-padding: 6 10; -fx-font-family: 'Segoe UI'; -fx-pref-width: 100;"/>
+            </VBox>
+            <VBox spacing="3">
+              <Label text="Campo profesional" style="-fx-font-family: 'Segoe UI'; -fx-font-size: 11px; -fx-text-fill: #5A5A8A;"/>
+              <TextField fx:id="tfPerCampo" promptText="Ingeniería"
+                         style="-fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #7DD3FC;
+                                -fx-border-width: 1.5; -fx-padding: 6 10; -fx-font-family: 'Segoe UI'; -fx-pref-width: 120;"/>
+            </VBox>
+          </HBox>
+
+          <HBox spacing="12" alignment="CENTER_LEFT">
+            <Button fx:id="btnAccionPer" text="Registrar" onAction="#ejecutarAccionPer"
+                    style="-fx-background-color: #1CB0F6; -fx-text-fill: white; -fx-font-weight: bold;
+                           -fx-font-family: 'Segoe UI'; -fx-background-radius: 10; -fx-padding: 8 24; -fx-cursor: hand;"/>
+            <Label fx:id="lblResultPer" text="" wrapText="true" maxWidth="700"
+                   style="-fx-font-family: 'Segoe UI'; -fx-font-size: 12px; -fx-text-fill: #0369A1;"/>
+          </HBox>
+        </VBox>
+      </VBox>
+
+      <!-- ─── SECCIÓN SATÉLITES ─── -->
+      <VBox spacing="10"
+            style="-fx-background-color: white; -fx-background-radius: 16; -fx-padding: 20;
+                   -fx-effect: dropshadow(gaussian,rgba(88,204,2,0.10),12,0,0,4);">
+        <HBox alignment="CENTER_LEFT" spacing="12">
+          <Label text="🌍" style="-fx-font-size: 22px;"/>
+          <VBox spacing="1">
+            <Label fx:id="lblTotalSatelites" text="Total de satélites registrados: 6"
+                   style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-font-family: 'Segoe UI'; -fx-text-fill: #1A1035;"/>
+            <Label text="Satélites precargados en el sistema — solo lectura"
+                   style="-fx-font-size: 11px; -fx-text-fill: #8B8BBA; -fx-font-family: 'Segoe UI';"/>
+          </VBox>
+          <Region HBox.hgrow="ALWAYS"/>
+          <Label text="🔒 Solo lectura"
+                 style="-fx-background-color: #ECFDF5; -fx-text-fill: #059669; -fx-padding: 5 12;
+                        -fx-background-radius: 20; -fx-font-family: 'Segoe UI'; -fx-font-size: 11px; -fx-font-weight: bold;"/>
+        </HBox>
+
+        <TableView fx:id="tablaSat" prefHeight="180"
+                   style="-fx-background-color: transparent; -fx-background-radius: 10;
+                          -fx-border-color: #E8E8F5; -fx-border-radius: 10;">
+          <columns>
+            <TableColumn fx:id="colSatId"        text="ID"           prefWidth="90"/>
+            <TableColumn fx:id="colSatNombre"    text="Nombre"       prefWidth="110"/>
+            <TableColumn fx:id="colSatFuncion"   text="Función"      prefWidth="180"/>
+            <TableColumn fx:id="colSatEncargado" text="Encargado"    prefWidth="150"/>
+            <TableColumn fx:id="colSatDpto"      text="Departamento" prefWidth="140"/>
+            <TableColumn fx:id="colSatLoc"       text="Localización" prefWidth="160"/>
+            <TableColumn fx:id="colSatCapital"   text="Capital ($)"  prefWidth="120"/>
+          </columns>
+          <placeholder>
+            <Label text="Sin satélites registrados" style="-fx-text-fill: #AAAACC;"/>
+          </placeholder>
+        </TableView>
+      </VBox>
+
+    </VBox>
+
+    <!-- ══════════ FOOTER ══════════ -->
+    <HBox alignment="CENTER" style="-fx-background-color: #4B2ECB; -fx-padding: 10;">
+      <Label text="SatControl v1.0  ·  Poliedro © 2025  ·  Sistema de Gestión de Satélites"
+             style="-fx-text-fill: #BDB5FF; -fx-font-family: 'Segoe UI'; -fx-font-size: 11px;"/>
+    </HBox>
+
+  </VBox>
+</ScrollPane>
